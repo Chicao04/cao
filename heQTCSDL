@@ -25,3 +25,63 @@ call test();
 
 
 --                   
+
+
+delimiter ;
+
+select * from test; 
+call test(); 
+
+
+USE ap_1 ; 
+
+drop procedure if exists test; 
+ delimiter // 
+CREATE procedure test()
+begin 
+	declare max_invoice_total  decimal(9, 2) ; 
+    declare min_invoice_total  decimal(9,2 ); 
+    declare percent_difference decimal(9, 4 ); 
+    declare count_invoice_id   int; 
+    declare vendor_id_var      int; 
+    
+    set vendor_id_var = 95; 
+    
+    select max(invoice_total) , min(invoice_tal) , count(invoice_id )
+    into max_invoice_total , min_invoice_total , count_invoice_id 
+    from invoices where vendor_id = vendor_id_var; 
+    
+    set percent_difference = (max_invoice_total - min_invoice_total) /
+								min_invoice_total *100 ;
+                                
+	select concat('$' , max_invoice_total)as 'Maximum invoice' , 
+			concat('$' , min_invoice_total) as 'Minximun invoice', 
+            concat('%' , ROUND(percent_difference, 2 )) as 'Percent difference',
+            count_invoice_id as 'Number of invoice'; 
+end//
+
+
+
+--
+
+drop procedure if exists test; 
+delimiter // 
+create procedure test()
+begin 
+declare first_invoice_due_date date; 
+select MIN(invoice_due_date) 
+INTO first_invoice_due_date
+from invoices
+where invoice_total  -payment_total - credit_total > 0 ; 
+
+if first_invoice_due_date < NOW() THEN
+	select 'outstan ing invoices are overdue!' ; 
+elseif first_invoice_due_date = now() THEN 
+	select 'outstanding invoices are due today!'; 
+else
+	select 'No invoices are overdue.'; 
+    end if;
+    
+             
+end//
+			

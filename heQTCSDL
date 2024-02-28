@@ -1,0 +1,24 @@
+use ap_1;
+
+drop procedure if exists test; 
+delimiter // 
+
+create procedure test()
+begin 
+declare sum_balance_due_var DECIMAL(9, 2) ; 
+select SUM(invoice_total - payment_total - credit_total)
+into sum_balance_due_var 
+from invoices
+where vendor_id = 95 ; 
+
+if sum_balance_due_var > 0 THEN 
+	select concat('Balance due: $' , sum_balance_due_var) AS message ;
+else 
+	select 'Balance paid in full' AS message ; 
+    end if;
+end//
+
+delimiter ;
+
+select * from test; 
+call test(); 

@@ -1,1 +1,10 @@
-#include
+
+def dem_xuat_hien(tu,cau):
+    so_xh= 0 
+    for w in cau.split():
+        if w == tu :
+            so_xh += 1 
+    print(f"{so_xh}")
+cv = input()
+tu = input()
+dem_xuat_hien(tu,cv)
